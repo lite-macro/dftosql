@@ -86,9 +86,9 @@ def i_pg(conn: conn_pg, table: str, df: pd.DataFrame) -> None:
             print(sql, tuple(row))
             cur.execute(sql, tuple(row))
             conn.commit()
-        except sqlite3.IntegrityError as e:
+        except psycopg2.IntegrityError as e:
             conn.commit()   # the same as conn.rollback() because pgsql rollback entire transaction whenever error occur
-            if 'UNIQUE constraint failed:' in str(e):
+            if 'duplicate key value violates unique constraint' in str(e):
                 logger.warn(e)
             else:
                 logger.error(e)
